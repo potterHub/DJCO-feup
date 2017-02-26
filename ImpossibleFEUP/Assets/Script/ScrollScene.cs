@@ -8,7 +8,7 @@ public class ScrollScene : MonoBehaviour {
     // Use this for initialization
     void Start()
     {
-        ground = GetComponent<Rigidbody2D>();// get the kinematic rigid body from the ground
+        ground = GetComponent<Rigidbody2D>();
 
         ground.velocity = new Vector2(GameControl.instance.scrollSpeed, 0);// scroll velocity
     }
