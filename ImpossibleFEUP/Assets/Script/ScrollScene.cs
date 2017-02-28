@@ -9,9 +9,15 @@ public class ScrollScene : MonoBehaviour {
     void Start()
     {
         ground = GetComponent<Rigidbody2D>();
+        //setScrollSpeed(GameControl.instance.scrollSpeed);
 
-        ground.velocity = new Vector2(GameControl.instance.scrollSpeed, 0);// scroll velocity
+        //GameControl.instance.setSceneScroll(this);
     }
+
+    public void setScrollSpeed(float speed)
+    {
+        ground.velocity = new Vector2(speed, 0);// scroll velocity
+    } 
 
     // Update is called once per frame
     void Update () {
