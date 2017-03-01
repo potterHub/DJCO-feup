@@ -13,8 +13,11 @@ public class PlayerControler : MonoBehaviour {
     private Rigidbody2D playerRgBody;
 
     public LayerMask firstFloor;
-    public bool isGrounded;
-    
+    public LayerMask secondFloor;
+
+    private bool onSecondFloor;
+    private bool isGrounded;
+
     private Collider2D playerColider;
 
     private float startX = 0f;
@@ -59,6 +62,15 @@ public class PlayerControler : MonoBehaviour {
         haveColideWithOtherStudent = true;
     }
 
+    public void setOnSecondFloorTo(bool value) {
+        this.onSecondFloor = value;
+    }
+
+    public bool isOnSecondFloor()
+    {
+        return onSecondFloor;
+    }
+
     // Update is called once per 
     void Update () {
         if (haveColideWithOtherStudent) {
@@ -69,17 +81,16 @@ public class PlayerControler : MonoBehaviour {
             }
         }
 
-        isGrounded = Physics2D.IsTouchingLayers(playerColider, firstFloor);
+        // secondFloor colider is importante to make the double jump to the secound floor only
+        isGrounded = Physics2D.IsTouchingLayers(playerColider, firstFloor) || Physics2D.IsTouchingLayers(playerColider, secondFloor);
 
         playerRgBody.velocity = new Vector2(playerCurrentSpeed, playerRgBody.velocity.y);
-        if (isGrounded && Input.GetMouseButtonDown(0)) {
+        if (isGrounded && !onSecondFloor && Input.GetMouseButtonDown(0)) {
             playerRgBody.velocity = new Vector2(playerRgBody.velocity.x, jumpSpeed);
-        }
+        }        
 
+        // gui update
         float meters = ((transform.position.x - startX) / 2f);
         metersText.text = "meters: " + meters.ToString("0.00") + "m"; 
-
-
-        
 	}
 }

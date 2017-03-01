@@ -17,11 +17,9 @@ public class OtherStudentController : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-        if (timerToDestroy)
-        {
+        if (timerToDestroy) {
             timerLeftToDestroy -= Time.deltaTime;
-            if (timerLeftToDestroy < 0)
-            {
+            if (timerLeftToDestroy < 0) {
                 Destroy(gameObject);
             }
         }
@@ -29,8 +27,7 @@ public class OtherStudentController : MonoBehaviour {
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        if (!timerToDestroy && collision.gameObject.tag == "Player")
-        {
+        if (!timerToDestroy && collision.gameObject.tag == "Player") {
             collision.gameObject.GetComponent<PlayerControler>().stepInOtherStudent(slowDownTime);
             timerLeftToDestroy = slowDownTime;
             timerToDestroy = true;
