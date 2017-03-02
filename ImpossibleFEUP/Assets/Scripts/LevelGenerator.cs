@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class LevelGenerator : MonoBehaviour {
     // move to the game control and acess trought game control
-    public PlayerControler player;
+    private const float numPlataformsInAdvance = 4.0f;
 
     // first floor
     public GameObject firstFloorGround;
@@ -19,30 +19,60 @@ public class LevelGenerator : MonoBehaviour {
     private Vector3 lastPositionSecondFloor;
 
     private Queue<GameObject> secondFloorGroundList;
-        
+
+    // objects in map
+    private List<GameObject> objectsInGame;
+    public float smallerTimeToSpawn = 2.0f;
+    public float biggestTimeToSpawn = 2.0f;
+    private float timerLeftToSpwan = 0.0f;
+
+    // beer
+    public GameObject beerObject;
+    // other student
+    public GameObject otherStudentObject;
+
+    // other Random Object
+    public GameObject otherObject;
+
     // Use this for initialization
     void Start () {
+        Random.InitState(unchecked((int)System.DateTime.Now.Ticks));
+
+        // first floor
         firstFloorGroundList = new Queue<GameObject>();
         firstFloorgroundHorizontalLenght = firstFloorGround.GetComponent<BoxCollider2D>().size.x;
 
         lastPositionFirstFloor = firstFloorGround.transform.position;
-        lastPositionFirstFloor.x -= firstFloorgroundHorizontalLenght * 2;
-        while (lastPositionFirstFloor.x < player.transform.position.x + firstFloorgroundHorizontalLenght * 4)
+        lastPositionFirstFloor.x -= firstFloorgroundHorizontalLenght;
+        while (lastPositionFirstFloor.x < GameController.instance.player.transform.position.x + firstFloorgroundHorizontalLenght * (numPlataformsInAdvance + 1))
             addNewFirstFloorToScene();
 
         GameObject.Find("1stFloor").SetActive(false);// desactivate the  1st plataform (so that does not appear in the scene)
-        
 
+        // second floor
         secondFloorGroundList = new Queue<GameObject>();
         secondFloorgroundHorizontalLenght = secondFloorGround.GetComponent<BoxCollider2D>().size.x;
 
         lastPositionSecondFloor = secondFloorGround.transform.position;
-        lastPositionSecondFloor.x -= secondFloorgroundHorizontalLenght * 2;
-        while (lastPositionSecondFloor.x < player.transform.position.x + secondFloorgroundHorizontalLenght * 4)
+        lastPositionSecondFloor.x -= secondFloorgroundHorizontalLenght;
+        while (lastPositionSecondFloor.x < GameController.instance.player.transform.position.x + secondFloorgroundHorizontalLenght * (numPlataformsInAdvance + 1))
             addNewSecondFloorToScene();
 
         GameObject.Find("2ndFloor").SetActive(false);// desactivate the  2nd plataform (so that does not appear in the scene)
-    }
+
+        // objects in game
+        objectsInGame = new List<GameObject>();
+        timerLeftToSpwan = Random.Range(smallerTimeToSpawn, biggestTimeToSpawn);
+
+        // beer
+        beerObject.SetActive(false);
+
+        // other student
+        otherStudentObject.SetActive(false);
+
+        // other Random Object
+        otherObject.SetActive(false);
+}
 
     private void addNewFirstFloorToScene() {
         lastPositionFirstFloor.x += firstFloorgroundHorizontalLenght;
@@ -90,10 +120,58 @@ public class LevelGenerator : MonoBehaviour {
 
     // Update is called once per frame
     void Update() {
-        if (lastPositionFirstFloor.x < player.transform.position.x + firstFloorgroundHorizontalLenght * 3)
+        if (lastPositionFirstFloor.x < GameController.instance.player.transform.position.x + firstFloorgroundHorizontalLenght * numPlataformsInAdvance)
             rotateFirstQueuePlataform();
 
-        if (lastPositionSecondFloor.x < player.transform.position.x + secondFloorgroundHorizontalLenght * 3)
+        if (lastPositionSecondFloor.x < GameController.instance.player.transform.position.x + secondFloorgroundHorizontalLenght * numPlataformsInAdvance)
             rotateSecondQueuePlataform();
+
+        destroyObjects();
+
+        timerLeftToSpwan -= Time.deltaTime;
+        if (timerLeftToSpwan <= 0)
+            creatObjects();
+    }
+
+    private void destroyObjects() {
+        float limit = firstFloorGroundList.Peek().transform.position.x;
+        for (int i = objectsInGame.Count - 1; i >= 0; i--)
+        {
+            if (objectsInGame[i].transform.position.x <= limit)
+            {
+                Destroy(objectsInGame[i]);
+                objectsInGame.RemoveAt(i);
+            }
+        }
+    }
+
+    private void creatObjects() {
+        // getting camera dimensions to spawn the object outside of the screen before the player passes by it
+        var vertExtent = GameController.instance.gameCamera.orthographicSize;
+        var horzExtent = vertExtent * Screen.width / Screen.height;
+        float endOfScreen = GameController.instance.gameCamera.transform.position.x + horzExtent;
+        
+        // inc camera size so the objects appear after the camera
+        GameObject newObj;
+        int type = Random.Range(0, 3);
+        switch (type) {
+            case 0:
+                newObj = Instantiate(beerObject, new Vector3(Random.Range(endOfScreen, lastPositionFirstFloor.x), beerObject.transform.position.y, 0), transform.rotation);
+                break;
+            case 1:
+                newObj = Instantiate(otherStudentObject, new Vector3(Random.Range(endOfScreen, lastPositionFirstFloor.x), beerObject.transform.position.y, 0), transform.rotation);
+                break;
+            default:
+                newObj = Instantiate(otherObject, new Vector3(Random.Range(endOfScreen, lastPositionFirstFloor.x), beerObject.transform.position.y, 0), transform.rotation);
+                break;
+        }
+        // after generating the object check if the object can be placed be listing all the others and verifing its positions (if )
+
+
+        // setting object active and adding it to the scene
+        newObj.SetActive(true);
+        objectsInGame.Add(newObj);
+        // after creating reset timer to spawn
+        timerLeftToSpwan = Random.Range(smallerTimeToSpawn, biggestTimeToSpawn);
     }
 }

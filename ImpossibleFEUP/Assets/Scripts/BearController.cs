@@ -21,7 +21,7 @@ public class BearController : MonoBehaviour {
         if (collision.gameObject.tag == "Player")
         {
             collision.gameObject.GetComponent<PlayerControler>().stepInBeer();
-            Destroy(gameObject);
+            gameObject.SetActive(false);
         }
     }
 }

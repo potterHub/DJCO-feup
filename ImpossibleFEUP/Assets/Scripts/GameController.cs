@@ -5,11 +5,12 @@ using UnityEngine;
 public class GameController : MonoBehaviour {
     public static GameController instance;
 
+    public Camera gameCamera;
     public LevelGenerator scenery;
     public PlayerControler player;
 
-	// Use this for initialization
-	void Awake () {
+    // Use this for initialization
+    void Awake () {
         if (instance == null)
             instance = this;
         else if (instance != this)

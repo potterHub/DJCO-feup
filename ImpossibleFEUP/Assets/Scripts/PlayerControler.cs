@@ -4,7 +4,8 @@ using UnityEngine;
 using UnityEngine.UI;
 
 public class PlayerControler : MonoBehaviour {
-    public HealthBarScript healthBar;    
+    public HealthBarScript healthBar;
+    private bool isDead = false;
 
     public float playerSpeed;
     private float playerCurrentSpeed;
@@ -27,12 +28,12 @@ public class PlayerControler : MonoBehaviour {
 
     public static float maxHealth = 100;
     public float Health;
-        
+
     private float timerLeftSlowDown;
 
     private bool haveColideWithOtherStudent;
     // Use this for initialization
-    void Start () {
+    void Start() {
         metersText.text = "meters: 0m";
         scoreText.text = "score: 0";
         playerRgBody = GetComponent<Rigidbody2D>();
@@ -47,23 +48,35 @@ public class PlayerControler : MonoBehaviour {
 
         haveColideWithOtherStudent = false;
     }
+    public bool isPlayerDead() {
+        return isDead;
+    }
 
     public void stepInBeer() {
-        if (Health + 10 >= 0)
-        {
+        if (!isDead) {
             Health -= 10;
+            if (Health < 0) {
+                Health = 0;
+                isDead = true;
+                playerCurrentSpeed = 0f;
+                // play dead animation
+            }
             healthBar.updateBar(Health / PlayerControler.maxHealth);
         }
     }
 
     public void stepInOtherStudent(float slowDownTime) {
-        timerLeftSlowDown = slowDownTime;
-        playerCurrentSpeed = playerSpeed / 3.0f;
-        haveColideWithOtherStudent = true;
+        if (!isDead) {
+            timerLeftSlowDown = slowDownTime;
+            playerCurrentSpeed = playerSpeed / 3.0f;
+            haveColideWithOtherStudent = true;
+        }
     }
 
     public void setOnSecondFloorTo(bool value) {
-        this.onSecondFloor = value;
+        if (!isDead){
+            this.onSecondFloor = value;
+        }
     }
 
     public bool isOnSecondFloor()
@@ -73,24 +86,29 @@ public class PlayerControler : MonoBehaviour {
 
     // Update is called once per 
     void Update () {
-        if (haveColideWithOtherStudent) {
-            timerLeftSlowDown -= Time.deltaTime;
-            if (timerLeftSlowDown < 0) {
-                haveColideWithOtherStudent = false;
-                playerCurrentSpeed = playerSpeed;
+        if (!isDead) {
+            if (haveColideWithOtherStudent)
+            {
+                timerLeftSlowDown -= Time.deltaTime;
+                if (timerLeftSlowDown < 0)
+                {
+                    haveColideWithOtherStudent = false;
+                    playerCurrentSpeed = playerSpeed;
+                }
             }
+
+            // secondFloor colider is importante to make the double jump to the secound floor only
+            isGrounded = Physics2D.IsTouchingLayers(playerColider, firstFloor) || Physics2D.IsTouchingLayers(playerColider, secondFloor);
+
+            playerRgBody.velocity = new Vector2(playerCurrentSpeed, playerRgBody.velocity.y);
+            if (isGrounded && !onSecondFloor && Input.GetMouseButtonDown(0))
+            {
+                playerRgBody.velocity = new Vector2(playerRgBody.velocity.x, jumpSpeed);
+            }
+
+            // gui update
+            float meters = ((transform.position.x - startX) / 2f);
+            metersText.text = "meters: " + meters.ToString("0.00") + "m";
         }
-
-        // secondFloor colider is importante to make the double jump to the secound floor only
-        isGrounded = Physics2D.IsTouchingLayers(playerColider, firstFloor) || Physics2D.IsTouchingLayers(playerColider, secondFloor);
-
-        playerRgBody.velocity = new Vector2(playerCurrentSpeed, playerRgBody.velocity.y);
-        if (isGrounded && !onSecondFloor && Input.GetMouseButtonDown(0)) {
-            playerRgBody.velocity = new Vector2(playerRgBody.velocity.x, jumpSpeed);
-        }        
-
-        // gui update
-        float meters = ((transform.position.x - startX) / 2f);
-        metersText.text = "meters: " + meters.ToString("0.00") + "m"; 
 	}
 }

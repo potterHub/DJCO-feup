@@ -20,7 +20,7 @@ public class OtherStudentController : MonoBehaviour {
         if (timerToDestroy) {
             timerLeftToDestroy -= Time.deltaTime;
             if (timerLeftToDestroy < 0) {
-                Destroy(gameObject);
+                gameObject.SetActive(false);
             }
         }
     }
