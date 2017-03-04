@@ -31,6 +31,9 @@ public class LevelGenerator : MonoBehaviour {
     // other student
     public GameObject otherStudentObject;
 
+    // coffe Object
+    public GameObject coffeObject;
+
     // other Random Object
     public GameObject otherObject;
 
@@ -64,15 +67,18 @@ public class LevelGenerator : MonoBehaviour {
         objectsInGame = new List<GameObject>();
         timerLeftToSpwan = Random.Range(smallerTimeToSpawn, biggestTimeToSpawn);
 
-        // beer
+        // beer object
         beerObject.SetActive(false);
 
         // other student
         otherStudentObject.SetActive(false);
 
+        // coffe object
+        coffeObject.SetActive(false);
+
         // other Random Object
         otherObject.SetActive(false);
-}
+    }
 
     private void addNewFirstFloorToScene() {
         lastPositionFirstFloor.x += firstFloorgroundHorizontalLenght;
@@ -106,14 +112,12 @@ public class LevelGenerator : MonoBehaviour {
     public void levelGenSolidSecond() {
         Queue<GameObject> temp = new Queue<GameObject>(secondFloorGroundList);
         do{            
-            Debug.Log("ola - " + temp.Count);
             temp.Dequeue().GetComponent<BoxCollider2D>().isTrigger = false;
         }while (temp.Count > 0);
     }
     public void levelGenTriggerSecond(){
         Queue<GameObject> temp = new Queue<GameObject>(secondFloorGroundList);
         do { 
-            Debug.Log("adeus - " + temp.Count);
             temp.Dequeue().GetComponent<BoxCollider2D>().isTrigger = true;
         } while (temp.Count > 0);
     }
@@ -153,18 +157,16 @@ public class LevelGenerator : MonoBehaviour {
         
         // inc camera size so the objects appear after the camera
         GameObject newObj;
-        int type = Random.Range(0, 3);
-        switch (type) {
-            case 0:
-                newObj = Instantiate(beerObject, new Vector3(Random.Range(endOfScreen, lastPositionFirstFloor.x), beerObject.transform.position.y, 0), transform.rotation);
-                break;
-            case 1:
-                newObj = Instantiate(otherStudentObject, new Vector3(Random.Range(endOfScreen, lastPositionFirstFloor.x), beerObject.transform.position.y, 0), transform.rotation);
-                break;
-            default:
-                newObj = Instantiate(otherObject, new Vector3(Random.Range(endOfScreen, lastPositionFirstFloor.x), beerObject.transform.position.y, 0), transform.rotation);
-                break;
-        }
+        int type = Random.Range(0, 10);
+        if (type < 3)
+            newObj = generateNewObject(ref beerObject,endOfScreen);
+        else if (type <6)
+            newObj = generateNewObject(ref otherStudentObject, endOfScreen);
+        else if(type < 8)
+            newObj = generateNewObject(ref otherObject, endOfScreen);
+        else
+            newObj = generateNewObject(ref coffeObject, endOfScreen);
+                
         // after generating the object check if the object can be placed be listing all the others and verifing its positions (if )
 
 
@@ -173,5 +175,11 @@ public class LevelGenerator : MonoBehaviour {
         objectsInGame.Add(newObj);
         // after creating reset timer to spawn
         timerLeftToSpwan = Random.Range(smallerTimeToSpawn, biggestTimeToSpawn);
+    }
+
+    private GameObject generateNewObject(ref GameObject obj, float endOfScreen) {
+        GameObject newObj = Instantiate(obj, new Vector3(Random.Range(endOfScreen, lastPositionFirstFloor.x), obj.transform.position.y, 0), transform.rotation);
+        newObj.transform.parent = GameObject.Find("Scenery").transform;
+        return newObj;
     }
 }

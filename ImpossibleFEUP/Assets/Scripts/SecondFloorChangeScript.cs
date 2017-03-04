@@ -43,9 +43,10 @@ public class SecondFloorChangeScript : MonoBehaviour {
             } else {
                 var player = collision.gameObject.GetComponent<PlayerControler>();
                 // Debug.Log(player.gameObject.transform.position.y + " - " + transform.position.y);
-                if (player.transform.position.y > transform.position.y)
+                if (player.transform.position.y > transform.position.y && player.getNumCoffes() > 0 )
                 {
                     Debug.Log("To second Floor");
+                    player.useCoffe();
                     GameController.instance.scenery.GetComponent<LevelGenerator>().levelGenSolidSecond();// change to solid
                     playerControler.setOnSecondFloorTo(true);
                     timerLeftToDrop = dropTimer;

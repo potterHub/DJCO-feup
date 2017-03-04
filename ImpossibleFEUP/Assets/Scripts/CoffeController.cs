@@ -2,7 +2,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class BearController : MonoBehaviour {
+public class CoffeController : MonoBehaviour {
+
 	// Use this for initialization
 	void Start () {
 		
@@ -17,7 +18,7 @@ public class BearController : MonoBehaviour {
     {
         if (collision.gameObject.tag == "Player")
         {
-            collision.gameObject.GetComponent<PlayerControler>().stepInBeer();
+            collision.gameObject.GetComponent<PlayerControler>().coffePicked();
             gameObject.SetActive(false);
         }
     }

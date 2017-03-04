@@ -13,7 +13,7 @@ public class OtherStudentController : MonoBehaviour {
     // Use this for initialization
     void Start () {
         timerToDestroy = false;
-	}
+    }
 	
 	// Update is called once per frame
 	void Update () {
@@ -23,6 +23,12 @@ public class OtherStudentController : MonoBehaviour {
                 gameObject.SetActive(false);
             }
         }
+    }
+
+    void OnCollisionEnter2D(Collision2D collision)
+    {
+        if (collision.gameObject.tag == "Player")// to avoid the collision between the student and the other students
+            Physics2D.IgnoreCollision(collision.collider, GetComponent<Collider2D>());
     }
 
     private void OnTriggerEnter2D(Collider2D collision)

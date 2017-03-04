@@ -6,6 +6,7 @@ using UnityEngine.UI;
 public class PlayerControler : MonoBehaviour {
     public HealthBarScript healthBar;
     private bool isDead = false;
+    private int numCoffes = 0;
 
     public float playerSpeed;
     private float playerCurrentSpeed;
@@ -16,6 +17,7 @@ public class PlayerControler : MonoBehaviour {
     public LayerMask firstFloor;
     public LayerMask secondFloor;
 
+    private bool jumping;
     private bool onSecondFloor;
     private bool isGrounded;
 
@@ -34,6 +36,10 @@ public class PlayerControler : MonoBehaviour {
     private bool haveColideWithOtherStudent;
     // Use this for initialization
     void Start() {
+        isDead = false;
+        jumping = false;
+        numCoffes = 0;
+
         metersText.text = "meters: 0m";
         scoreText.text = "score: 0";
         playerRgBody = GetComponent<Rigidbody2D>();
@@ -50,6 +56,23 @@ public class PlayerControler : MonoBehaviour {
     }
     public bool isPlayerDead() {
         return isDead;
+    }
+
+
+    public int getNumCoffes() {
+        return numCoffes;
+    } 
+    public void coffePicked()
+    {
+        if (!isDead && numCoffes < 3)
+            numCoffes++;
+    }
+
+    public bool useCoffe() {
+        if (isDead || numCoffes <= 0)
+            return false;
+        numCoffes--;
+        return true;
     }
 
     public void stepInBeer() {
@@ -87,24 +110,28 @@ public class PlayerControler : MonoBehaviour {
     // Update is called once per 
     void Update () {
         if (!isDead) {
-            if (haveColideWithOtherStudent)
-            {
+            if (haveColideWithOtherStudent) {
                 timerLeftSlowDown -= Time.deltaTime;
-                if (timerLeftSlowDown < 0)
-                {
+                if (timerLeftSlowDown < 0) {
                     haveColideWithOtherStudent = false;
                     playerCurrentSpeed = playerSpeed;
                 }
             }
 
             // secondFloor colider is importante to make the double jump to the secound floor only
-            isGrounded = Physics2D.IsTouchingLayers(playerColider, firstFloor) || Physics2D.IsTouchingLayers(playerColider, secondFloor);
+            bool _1st_grounded = Physics2D.IsTouchingLayers(playerColider, firstFloor);
+            bool _2nd_touching = Physics2D.IsTouchingLayers(playerColider, secondFloor);
 
+            if (_1st_grounded)
+                jumping = false;
+
+            isGrounded = _1st_grounded || _2nd_touching;
             playerRgBody.velocity = new Vector2(playerCurrentSpeed, playerRgBody.velocity.y);
-            if (isGrounded && !onSecondFloor && Input.GetMouseButtonDown(0))
-            {
+            if (!jumping && isGrounded && !onSecondFloor && Input.GetMouseButtonDown(0)) {
                 playerRgBody.velocity = new Vector2(playerRgBody.velocity.x, jumpSpeed);
-            }
+                if (_2nd_touching)
+                    jumping = true;
+            }         
 
             // gui update
             float meters = ((transform.position.x - startX) / 2f);
