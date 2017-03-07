@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;
 
 public class PlayerControler : MonoBehaviour {
+	private bool gameStarted;
     public HealthBarScript healthBar;
     private bool isDead = false;
     private int numCoffes = 0;
@@ -33,9 +34,14 @@ public class PlayerControler : MonoBehaviour {
 
     private float timerLeftSlowDown;
 
+	private float timePlayed;
+
     private bool haveColideWithOtherStudent;
     // Use this for initialization
     void Start() {
+		timePlayed = 0;
+		gameStarted = false;
+		meters = 0;
         isDead = false;
         jumping = false;
         numCoffes = 0;
@@ -134,7 +140,11 @@ public class PlayerControler : MonoBehaviour {
             }         
 
             // gui update
-            float meters = ((transform.position.x - startX) / 2f);
+			timePlayed += Time.deltaTime;
+			if (timePlayed < 0.2)
+				meters = 0;
+			else
+				meters += (playerCurrentSpeed/timePlayed)/100f;
             metersText.text = "meters: " + meters.ToString("0.00") + "m";
         }
 	}
