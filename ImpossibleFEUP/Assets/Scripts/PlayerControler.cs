@@ -27,7 +27,7 @@ public class PlayerControler : MonoBehaviour {
 
     private float startX = 0f;
     private float meters;
-    public Text scoreText;
+   
     public Text metersText;
 
     public static float maxHealth = 100;
@@ -47,8 +47,7 @@ public class PlayerControler : MonoBehaviour {
         jumping = false;
         numCoffes = 0;
 
-        metersText.text = "meters: 0m";
-        scoreText.text = "score: 0";
+        metersText.text = "Meters: 0m";
         playerRgBody = GetComponent<Rigidbody2D>();
         playerColider = GetComponent<Collider2D>();
         startX = transform.position.x;
@@ -146,7 +145,7 @@ public class PlayerControler : MonoBehaviour {
 				meters = 0;
 			else
 				meters += (playerCurrentSpeed/timePlayed)/100f;
-            metersText.text = "meters: " + meters.ToString("0.00") + "m";
+            metersText.text = "Meters: " + meters.ToString("0.00") + "m";
         }
 	}
 }
