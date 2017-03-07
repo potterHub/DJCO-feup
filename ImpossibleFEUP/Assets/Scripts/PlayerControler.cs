@@ -17,6 +17,7 @@ public class PlayerControler : MonoBehaviour {
 
     public LayerMask firstFloor;
     public LayerMask secondFloor;
+	public LayerMask otherObject;
 
     private bool jumping;
     private bool onSecondFloor;
@@ -125,7 +126,7 @@ public class PlayerControler : MonoBehaviour {
             }
 
             // secondFloor colider is importante to make the double jump to the secound floor only
-            bool _1st_grounded = Physics2D.IsTouchingLayers(playerColider, firstFloor);
+			bool _1st_grounded = Physics2D.IsTouchingLayers(playerColider, firstFloor) || Physics2D.IsTouchingLayers(playerColider, otherObject);
             bool _2nd_touching = Physics2D.IsTouchingLayers(playerColider, secondFloor);
 
             if (_1st_grounded)
