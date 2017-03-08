@@ -8,6 +8,10 @@ public class PlayerControler : MonoBehaviour {
     public HealthBarScript healthBar;
     private bool isDead = false;
     private int numCoffes = 0;
+	public GameObject scoresPanel;
+	private Scores scores;
+	public Text scoresText;
+	private bool scoresShown;
 
     public float playerSpeed;
     private float playerCurrentSpeed;
@@ -59,6 +63,7 @@ public class PlayerControler : MonoBehaviour {
         playerCurrentSpeed = playerSpeed;
 
         haveColideWithOtherStudent = false;
+		scoresShown = false;
     }
     public bool isPlayerDead() {
         return isDead;
@@ -115,37 +120,70 @@ public class PlayerControler : MonoBehaviour {
 
     // Update is called once per 
     void Update () {
-        if (!isDead) {
-            if (haveColideWithOtherStudent) {
-                timerLeftSlowDown -= Time.deltaTime;
-                if (timerLeftSlowDown < 0) {
-                    haveColideWithOtherStudent = false;
-                    playerCurrentSpeed = playerSpeed;
-                }
-            }
+		if (!isDead) {
+			if (haveColideWithOtherStudent) {
+				timerLeftSlowDown -= Time.deltaTime;
+				if (timerLeftSlowDown < 0) {
+					haveColideWithOtherStudent = false;
+					playerCurrentSpeed = playerSpeed;
+				}
+			}
 
-            // secondFloor colider is importante to make the double jump to the secound floor only
-			bool _1st_grounded = Physics2D.IsTouchingLayers(playerColider, firstFloor) || Physics2D.IsTouchingLayers(playerColider, otherObject);
-            bool _2nd_touching = Physics2D.IsTouchingLayers(playerColider, secondFloor);
+			// secondFloor colider is importante to make the double jump to the secound floor only
+			bool _1st_grounded = Physics2D.IsTouchingLayers (playerColider, firstFloor) || Physics2D.IsTouchingLayers (playerColider, otherObject);
+			bool _2nd_touching = Physics2D.IsTouchingLayers (playerColider, secondFloor);
 
-            if (_1st_grounded)
-                jumping = false;
+			if (_1st_grounded)
+				jumping = false;
 
-            isGrounded = _1st_grounded || _2nd_touching;
-            playerRgBody.velocity = new Vector2(playerCurrentSpeed, playerRgBody.velocity.y);
-            if (!jumping && isGrounded && !onSecondFloor && Input.GetMouseButtonDown(0)) {
-                playerRgBody.velocity = new Vector2(playerRgBody.velocity.x, jumpSpeed);
-                if (_2nd_touching)
-                    jumping = true;
-            }         
+			isGrounded = _1st_grounded || _2nd_touching;
+			playerRgBody.velocity = new Vector2 (playerCurrentSpeed, playerRgBody.velocity.y);
+			if (!jumping && isGrounded && !onSecondFloor && Input.GetMouseButtonDown (0)) {
+				playerRgBody.velocity = new Vector2 (playerRgBody.velocity.x, jumpSpeed);
+				if (_2nd_touching)
+					jumping = true;
+			}         
 
-            // gui update
+			// gui update
 			timePlayed += Time.deltaTime;
 			if (timePlayed < 0.2)
 				meters = 0;
 			else
-				meters += (playerCurrentSpeed/timePlayed)/100f;
-            metersText.text = "Meters: " + meters.ToString("0.00") + "m";
-        }
+				meters += (timePlayed * playerCurrentSpeed)/3000f;
+			metersText.text = "Meters: " + meters.ToString ("0.00") + "m";
+			if (Health <= 0)
+				isDead = true;
+		} else {
+			if (!scoresShown)
+				showScores ();
+		}
+	}
+
+	private void showScores() {
+		
+		if (!System.IO.File.Exists(Application.persistentDataPath + "/scores")) {
+			scores = new Scores ();
+		} else {
+			scores = FileManager.ReadFromBinaryFile<Scores> (Application.persistentDataPath + "/scores");
+		}
+
+		if (scores.getScores ().Count < 5) {
+			scores.addScore ("Eduardo", meters);
+			scores.getScores ().Sort (scores.SortByScore);
+		} else if (meters > scores.getScores () [4].Value) {
+			scores.addScore ("Eduardo", meters);
+			scores.getScores ().Sort (scores.SortByScore);
+			scores.getScores ().RemoveAt (4);
+		}
+
+		for (int i = 0; i < scores.getScores().Count; i++) {
+			scoresText.text += scores.getScores() [i].Key + "         " + scores.getScores()[i].Value.ToString("0.00") + "m" + "\r\n";
+		}
+
+		scoresPanel.SetActive (true);
+
+		scoresShown = true;
+
+		FileManager.WriteToBinaryFile (Application.persistentDataPath + "/scores", scores);
 	}
 }

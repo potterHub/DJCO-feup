@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class GameController : MonoBehaviour {
     public static GameController instance;
@@ -15,7 +16,6 @@ public class GameController : MonoBehaviour {
             instance = this;
         else if (instance != this)
             Destroy(gameObject);
-
     }
 
     // Update is called once per frame
