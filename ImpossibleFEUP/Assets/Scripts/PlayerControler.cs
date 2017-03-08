@@ -22,8 +22,8 @@ public class PlayerControler : MonoBehaviour {
     public LayerMask firstFloor;
     public LayerMask secondFloor;
 	public LayerMask otherObject;
-
-    private bool jumping;
+    
+    private bool doubleJump;
     private bool onSecondFloor;
     private bool isGrounded;
 
@@ -48,7 +48,7 @@ public class PlayerControler : MonoBehaviour {
 		gameStarted = false;
 		meters = 0;
         isDead = false;
-        jumping = false;
+        doubleJump = false;
         numCoffes = 0;
 
         metersText.text = "Meters: 0m";
@@ -68,7 +68,6 @@ public class PlayerControler : MonoBehaviour {
     public bool isPlayerDead() {
         return isDead;
     }
-
 
     public int getNumCoffes() {
         return numCoffes;
@@ -107,15 +106,23 @@ public class PlayerControler : MonoBehaviour {
         }
     }
 
-    public void setOnSecondFloorTo(bool value) {
-        if (!isDead){
-            this.onSecondFloor = value;
+    public void jumpingToSecondFloor() {
+        if (!isDead) {
+            this.onSecondFloor = doubleJump = true;
         }
     }
 
-    public bool isOnSecondFloor()
-    {
+    public void fallingFromSecondFloor() {
+        if (!isDead)
+            this.onSecondFloor = doubleJump = false;
+    }
+
+    public bool isOnSecondFloor() {
         return onSecondFloor;
+    }
+
+    public bool hasCoffe() {
+        return numCoffes > 0;
     }
 
     // Update is called once per 
@@ -129,20 +136,25 @@ public class PlayerControler : MonoBehaviour {
 				}
 			}
 
-			// secondFloor colider is importante to make the double jump to the secound floor only
-			bool _1st_grounded = Physics2D.IsTouchingLayers (playerColider, firstFloor) || Physics2D.IsTouchingLayers (playerColider, otherObject);
-			bool _2nd_touching = Physics2D.IsTouchingLayers (playerColider, secondFloor);
+            // secondFloor colider is importante to make the double jump to the secound floor only
+            bool _1st_grounded = Physics2D.IsTouchingLayers(playerColider, firstFloor) || Physics2D.IsTouchingLayers(playerColider, otherObject);
+            bool _2nd_touching = Physics2D.IsTouchingLayers(playerColider, secondFloor);
 
-			if (_1st_grounded)
-				jumping = false;
+            if (_1st_grounded)
+                doubleJump = false;
+            //if (_2nd_touching)
+            //    doubleJump = false;
 
-			isGrounded = _1st_grounded || _2nd_touching;
-			playerRgBody.velocity = new Vector2 (playerCurrentSpeed, playerRgBody.velocity.y);
-			if (!jumping && isGrounded && !onSecondFloor && Input.GetMouseButtonDown (0)) {
-				playerRgBody.velocity = new Vector2 (playerRgBody.velocity.x, jumpSpeed);
-				if (_2nd_touching)
-					jumping = true;
-			}         
+            isGrounded = _1st_grounded; //|| _2nd_touching;
+            playerRgBody.velocity = new Vector2(playerCurrentSpeed, playerRgBody.velocity.y);
+            if (Input.GetMouseButtonDown(0)) {
+                if (_1st_grounded) {
+                    playerRgBody.velocity = new Vector2(playerRgBody.velocity.x, jumpSpeed);
+                } else if (!doubleJump) {
+                    playerRgBody.velocity = new Vector2(playerRgBody.velocity.x, jumpSpeed);
+                    doubleJump = true;
+                }
+            }         
 
 			// gui update
 			timePlayed += Time.deltaTime;

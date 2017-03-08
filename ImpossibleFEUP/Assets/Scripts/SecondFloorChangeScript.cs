@@ -18,12 +18,10 @@ public class SecondFloorChangeScript : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-        if (timerToDrop)
-        {
+        if (timerToDrop) {
             timerLeftToDrop -= Time.deltaTime;
             textTimer2ndFloor.text = "Time To Drop: " + ((int)timerLeftToDrop) + "s";
-            if (timerLeftToDrop < 0)
-            {
+            if (timerLeftToDrop < 0 || (Input.GetMouseButtonDown(0) && timerLeftToDrop <= dropTimer - 1.0f)) {
                 var levelGen = GameController.instance.scenery.GetComponent<LevelGenerator>();
                 levelGen.levelGenTriggerSecond();
                 timerToDrop = false;
@@ -32,23 +30,21 @@ public class SecondFloorChangeScript : MonoBehaviour {
         }
     }
 
-    private void OnTriggerExit2D(Collider2D collision)
-    {
-        if (!timerToDrop && collision.gameObject.tag == "Player")
-        {
+    private void OnTriggerExit2D(Collider2D collision) {
+        if (!timerToDrop && collision.gameObject.tag == "Player") {
             var playerControler = GameController.instance.player.GetComponent<PlayerControler>();
-            if (playerControler.isOnSecondFloor()) {
+            if (playerControler.isOnSecondFloor()) {// if the player is on the secound floor already
                 Debug.Log("To first Floor");
-                playerControler.setOnSecondFloorTo(false);
+                playerControler.fallingFromSecondFloor();
             } else {
                 var player = collision.gameObject.GetComponent<PlayerControler>();
+                
                 // Debug.Log(player.gameObject.transform.position.y + " - " + transform.position.y);
-                if (player.transform.position.y > transform.position.y && player.getNumCoffes() > 0 )
-                {
+                if (player.transform.position.y > transform.position.y && player.getNumCoffes() > 0 && player.hasCoffe()) {
                     Debug.Log("To second Floor");
                     player.useCoffe();
                     GameController.instance.scenery.GetComponent<LevelGenerator>().levelGenSolidSecond();// change to solid
-                    playerControler.setOnSecondFloorTo(true);
+                    playerControler.jumpingToSecondFloor();
                     timerLeftToDrop = dropTimer;
                     timerToDrop = true;                    
                 }
