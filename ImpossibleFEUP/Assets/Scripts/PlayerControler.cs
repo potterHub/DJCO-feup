@@ -161,7 +161,7 @@ public class PlayerControler : MonoBehaviour {
 			if (timePlayed < 0.2)
 				meters = 0;
 			else
-				meters += (timePlayed * playerCurrentSpeed)/3000f;
+				meters += (playerCurrentSpeed + Time.deltaTime) / 1000f;
 			metersText.text = "Meters: " + meters.ToString ("0.00") + "m";
 			if (Health <= 0)
 				isDead = true;
@@ -183,9 +183,10 @@ public class PlayerControler : MonoBehaviour {
 			scores.addScore ("Eduardo", meters);
 			scores.getScores ().Sort (scores.SortByScore);
 		} else if (meters > scores.getScores () [4].Value) {
+			Debug.Log ("é maior");
 			scores.addScore ("Eduardo", meters);
 			scores.getScores ().Sort (scores.SortByScore);
-			scores.getScores ().RemoveAt (4);
+			scores.getScores ().RemoveAt (5);
 		}
 
 		for (int i = 0; i < scores.getScores().Count; i++) {
