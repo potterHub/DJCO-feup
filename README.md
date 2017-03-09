@@ -4,8 +4,7 @@
 ## engine
 
 
-* object generation improvement
-* becomes harder when the meters increase(faster more objects generated maybe   
+* object generation improvement (with time more objects are generated, dont allow object coliding with others)
 
 
 ## aspect
@@ -16,7 +15,6 @@
 * new sprites
 * music
 * music and visual effects when jumping and grabing things
-* instead of the barrel use a vending machine or a teacher or a radiator something from feup
 
 
 ## menus    
