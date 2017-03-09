@@ -13,5 +13,4 @@ public class HealthBarScript : MonoBehaviour {
         healthText.text = (healthPercentage * 100) + "%";
     }
 
-
 }

@@ -5,37 +5,41 @@ using UnityEngine.UI;
 
 public class PlayerControler : MonoBehaviour {
 	private bool gameStarted;
-    public HealthBarScript healthBar;
-    private bool isDead = false;
-    private int numCoffes = 0;
-	public GameObject scoresPanel;
-	private Scores scores;
-	public Text scoresText;
-	private bool scoresShown;
-
-    public float playerSpeed;
-    private float playerCurrentSpeed;
-    public float jumpSpeed;
-
-    private Rigidbody2D playerRgBody;
 
     public LayerMask firstFloor;
     public LayerMask secondFloor;
-	public LayerMask otherObject;
-    
-    private bool doubleJump;
-    private bool onSecondFloor;
-    private bool isGrounded;
+    public LayerMask otherObject;
 
+    public HealthBarScript healthBar;
+    public static float maxHealth = 100f;
+    public float Health;
+
+    public Text metersText;
+    private float meters;
+
+    public Text scoresText;
+    private bool scoresShown;
+
+    private bool isDead = false;
+    private int numCoffes = 0;
+
+	public GameObject scoresPanel;
+	private Scores scores;
+
+    private const float topTimeToIncreaseSpeed = 30f;
+    private const float downTimeToIncreaseSpeed = 20f;
+    private float timerLeftToIncrease;
+    public float playerInitialSpeed = 8f;
+    public float playerMaxSpeed = 20f;
+    private float playerCurrentSpeed;
+
+    private Rigidbody2D playerRgBody;
     private Collider2D playerColider;
 
-    private float startX = 0f;
-    private float meters;
-   
-    public Text metersText;
+    public float jumpSpeed;
+    private bool doubleJump;
+    private bool onSecondFloor;
 
-    public static float maxHealth = 100;
-    public float Health;
 
     private float timerLeftSlowDown;
 
@@ -54,13 +58,14 @@ public class PlayerControler : MonoBehaviour {
         metersText.text = "Meters: 0m";
         playerRgBody = GetComponent<Rigidbody2D>();
         playerColider = GetComponent<Collider2D>();
-        startX = transform.position.x;
 
+        Health = PlayerControler.maxHealth;
         healthBar.updateBar(Health / PlayerControler.maxHealth);
 
         timerLeftSlowDown = 0.0f;
 
-        playerCurrentSpeed = playerSpeed;
+        timerLeftToIncrease = Random.Range(downTimeToIncreaseSpeed,topTimeToIncreaseSpeed);
+        playerCurrentSpeed = playerInitialSpeed;
 
         haveColideWithOtherStudent = false;
 		scoresShown = false;
@@ -88,7 +93,7 @@ public class PlayerControler : MonoBehaviour {
     public void stepInBeer() {
         if (!isDead) {
             Health -= 10;
-            if (Health < 0) {
+            if (Health <= 0) {
                 Health = 0;
                 isDead = true;
                 playerCurrentSpeed = 0f;
@@ -101,7 +106,6 @@ public class PlayerControler : MonoBehaviour {
     public void stepInOtherStudent(float slowDownTime) {
         if (!isDead) {
             timerLeftSlowDown = slowDownTime;
-            playerCurrentSpeed = playerSpeed / 3.0f;
             haveColideWithOtherStudent = true;
         }
     }
@@ -130,10 +134,8 @@ public class PlayerControler : MonoBehaviour {
 		if (!isDead) {
 			if (haveColideWithOtherStudent) {
 				timerLeftSlowDown -= Time.deltaTime;
-				if (timerLeftSlowDown < 0) {
+				if (timerLeftSlowDown < 0)
 					haveColideWithOtherStudent = false;
-					playerCurrentSpeed = playerSpeed;
-				}
 			}
 
             // secondFloor colider is importante to make the double jump to the secound floor only
@@ -145,25 +147,39 @@ public class PlayerControler : MonoBehaviour {
             //if (_2nd_touching)
             //    doubleJump = false;
 
-            isGrounded = _1st_grounded; //|| _2nd_touching;
-            playerRgBody.velocity = new Vector2(playerCurrentSpeed, playerRgBody.velocity.y);
+            //isGrounded = _1st_grounded; //|| _2nd_touching;
+
+            playerRgBody.velocity = new Vector2(!haveColideWithOtherStudent ? playerCurrentSpeed : (playerCurrentSpeed / 3.0f), playerRgBody.velocity.y);
             if (Input.GetMouseButtonDown(0)) {
                 if (_1st_grounded) {
                     playerRgBody.velocity = new Vector2(playerRgBody.velocity.x, jumpSpeed);
+                    SoundController.instance.playEffect(effect.jump);
                 } else if (!doubleJump) {
                     playerRgBody.velocity = new Vector2(playerRgBody.velocity.x, jumpSpeed);
+                    SoundController.instance.playEffect(effect.jump);
                     doubleJump = true;
                 }
             }         
 
 			// gui update
 			timePlayed += Time.deltaTime;
-			if (timePlayed < 0.2)
-				meters = 0;
-			else
-				meters += (playerCurrentSpeed + Time.deltaTime) / 1000f;
+
+            meters += (playerCurrentSpeed * Time.deltaTime) / 2f;
 			metersText.text = "Meters: " + meters.ToString ("0.00") + "m";
-			if (Health <= 0)
+
+            // speed up level
+            timerLeftToIncrease -= Time.deltaTime;
+            if (timerLeftToIncrease <= 0f && playerCurrentSpeed < playerMaxSpeed) {
+                timerLeftToIncrease = Random.Range(downTimeToIncreaseSpeed, topTimeToIncreaseSpeed);
+                float playerAcelaration = Random.Range(1.5f,2.5f);
+                playerCurrentSpeed += playerAcelaration;
+                Debug.Log("acelarate " + playerAcelaration + " -> " + playerCurrentSpeed);
+            }
+
+            if (playerCurrentSpeed >= playerMaxSpeed)
+                Debug.Log("max Speed reached");
+
+            if (Health <= 0)
 				isDead = true;
 		} else {
 			if (!scoresShown)
