@@ -17,7 +17,7 @@ public class GameController : MonoBehaviour {
         else if (instance != this)
             Destroy(gameObject);
 
-        SoundController.instance.playMusic(music.bossfight_commando_steve);
+        SoundController.instance.playMusic(music.bossfight_commando_steve, true);
     }
 
     // Update is called once per frame

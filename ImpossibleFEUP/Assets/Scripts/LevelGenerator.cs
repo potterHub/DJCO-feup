@@ -144,8 +144,7 @@ public class LevelGenerator : MonoBehaviour
 
     // Update is called once per frame
     void Update()
-    {
-        if (!GameController.instance.player.isPlayerDead()) {
+    {        
             if (lastPositionFirstFloor.x < GameController.instance.player.transform.position.x + firstFloorgroundHorizontalLenght * numPlataformsInAdvance)
                 rotateFirstQueuePlataform();
 
@@ -154,6 +153,7 @@ public class LevelGenerator : MonoBehaviour
 
             destroyObjects();
 
+        if (!GameController.instance.player.isPlayerDead()) {
             timerLeftToSpwan -= Time.deltaTime;
             timerTimeToInc -= Time.deltaTime;
             if (timerLeftToSpwan <= 0f)

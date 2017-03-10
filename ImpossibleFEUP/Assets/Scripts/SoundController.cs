@@ -4,7 +4,8 @@ using UnityEngine;
 
 
 public enum music {
-    bossfight_commando_steve
+    bossfight_commando_steve,
+    player_death
 }
 
 public enum effect {
@@ -31,10 +32,10 @@ public class SoundController : MonoBehaviour {
             Destroy(gameObject);
     }
 
-    public void playMusic(music m) {
+    public void playMusic(music m, bool loop) {
         musicSource.clip = musicClips[(int)m];
         effectSource.volume = 0.8f;
-        musicSource.loop = true;
+        musicSource.loop = loop;
         musicSource.Play();
     }
 

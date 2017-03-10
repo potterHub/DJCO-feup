@@ -93,14 +93,23 @@ public class PlayerControler : MonoBehaviour {
     public void stepInBeer() {
         if (!isDead) {
             Health -= 25;
-            if (Health <= 0) {
-                Health = 0;
-                isDead = true;
-                playerCurrentSpeed = 0f;
-                // play dead animation
-            }
+            if (Health <= 0)
+                killPlayer();
             healthBar.updateBar(Health / PlayerControler.maxHealth);
         }
+    }
+
+    public void killPlayer() {
+        Health = 0;
+        isDead = true;
+        playerCurrentSpeed = 0f;
+
+        playerRgBody.velocity = new Vector2(0, playerRgBody.velocity.y);
+
+        SoundController.instance.stopMusic();
+        SoundController.instance.playMusic(music.player_death, false);
+        // play dead animation
+
     }
 
     public void stepInOtherStudent(float slowDownTime) {
@@ -171,7 +180,7 @@ public class PlayerControler : MonoBehaviour {
             timerLeftToIncrease -= Time.deltaTime;
             if (timerLeftToIncrease <= 0f && playerCurrentSpeed < playerMaxSpeed) {
                 timerLeftToIncrease = Random.Range(downTimeToIncreaseSpeed, topTimeToIncreaseSpeed);
-                float speed = playerCurrentSpeed + Random.Range(1.5f,2.5f);
+                float speed = playerCurrentSpeed + Random.Range(1.0f,1.5f);
                 playerCurrentSpeed += speed < playerMaxSpeed ? speed : playerMaxSpeed;
                 Debug.Log("acelarate " + playerCurrentSpeed);
             }
@@ -180,8 +189,8 @@ public class PlayerControler : MonoBehaviour {
                 Debug.Log("max Speed reached");
 
             if (Health <= 0)
-				isDead = true;
-		} else {
+                killPlayer();
+        } else {
 			if (!scoresShown)
 				showScores ();
 		}
