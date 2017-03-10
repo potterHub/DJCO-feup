@@ -4,7 +4,7 @@
 ## engine
 
 
-* object generation improvement (with time more objects are generated, dont allow object coliding with others)
+* vending machines draging bug
 
 
 ## aspect
@@ -13,8 +13,7 @@
 * show time
 * show the time in the player as a subobject (when in the upper plataform), and make effects (like when the time is ending starts to blink)
 * new sprites
-* music
-* music and visual effects when jumping and grabing things
+* sound and visual effects when jumping and grabing things
 
 
 ## menus    
