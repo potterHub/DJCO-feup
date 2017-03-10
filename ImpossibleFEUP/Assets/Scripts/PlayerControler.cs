@@ -92,7 +92,7 @@ public class PlayerControler : MonoBehaviour {
 
     public void stepInBeer() {
         if (!isDead) {
-            Health -= 10;
+            Health -= 25;
             if (Health <= 0) {
                 Health = 0;
                 isDead = true;
@@ -140,7 +140,7 @@ public class PlayerControler : MonoBehaviour {
 
             // secondFloor colider is importante to make the double jump to the secound floor only
             bool _1st_grounded = Physics2D.IsTouchingLayers(playerColider, firstFloor) || Physics2D.IsTouchingLayers(playerColider, otherObject);
-            bool _2nd_touching = Physics2D.IsTouchingLayers(playerColider, secondFloor);
+            //bool _2nd_touching = Physics2D.IsTouchingLayers(playerColider, secondFloor);
 
             if (_1st_grounded)
                 doubleJump = false;
@@ -149,7 +149,7 @@ public class PlayerControler : MonoBehaviour {
 
             //isGrounded = _1st_grounded; //|| _2nd_touching;
 
-            playerRgBody.velocity = new Vector2(!haveColideWithOtherStudent ? playerCurrentSpeed : (playerCurrentSpeed / 3.0f), playerRgBody.velocity.y);
+            playerRgBody.velocity = new Vector2(!haveColideWithOtherStudent ? playerCurrentSpeed : (playerCurrentSpeed / 2.0f), playerRgBody.velocity.y);
             if (Input.GetMouseButtonDown(0)) {
                 if (_1st_grounded) {
                     playerRgBody.velocity = new Vector2(playerRgBody.velocity.x, jumpSpeed);
@@ -171,9 +171,9 @@ public class PlayerControler : MonoBehaviour {
             timerLeftToIncrease -= Time.deltaTime;
             if (timerLeftToIncrease <= 0f && playerCurrentSpeed < playerMaxSpeed) {
                 timerLeftToIncrease = Random.Range(downTimeToIncreaseSpeed, topTimeToIncreaseSpeed);
-                float playerAcelaration = Random.Range(1.5f,2.5f);
-                playerCurrentSpeed += playerAcelaration;
-                Debug.Log("acelarate " + playerAcelaration + " -> " + playerCurrentSpeed);
+                float speed = playerCurrentSpeed + Random.Range(1.5f,2.5f);
+                playerCurrentSpeed += speed < playerMaxSpeed ? speed : playerMaxSpeed;
+                Debug.Log("acelarate " + playerCurrentSpeed);
             }
 
             if (playerCurrentSpeed >= playerMaxSpeed)

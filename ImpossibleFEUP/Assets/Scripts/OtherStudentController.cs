@@ -30,8 +30,7 @@ public class OtherStudentController : MonoBehaviour {
             Physics2D.IgnoreCollision(collision.collider, GetComponent<Collider2D>());
     }
 
-    private void OnTriggerEnter2D(Collider2D collision)
-    {
+    private void OnTriggerEnter2D(Collider2D collision) {
         if (!timerToDestroy && collision.gameObject.tag == "Player") {
             var slowDownTime = Random.Range(downSlowDownTime, topSlowDownTime);
             collision.gameObject.GetComponent<PlayerControler>().stepInOtherStudent(slowDownTime);
