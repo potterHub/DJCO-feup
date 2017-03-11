@@ -13,7 +13,7 @@
 * show time
 * show the time in the player as a subobject (when in the upper plataform), and make effects (like when the time is ending starts to blink)
 * new sprites
-* sound and visual effects when jumping and grabing things
+* sound and visual effects when grabing things
 
 
 ## menus    
