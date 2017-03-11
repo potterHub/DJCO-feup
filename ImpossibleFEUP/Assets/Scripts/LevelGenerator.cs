@@ -165,7 +165,7 @@ public class LevelGenerator : MonoBehaviour
                 smallerTimeToSpawn = smallerTime > minTimeToSpawn ? smallerTime : minTimeToSpawn;
                 biggestTimeToSpawn = smallerTimeToSpawn + 0.5f;
 
-                Debug.Log("decrease time to spawn " + smallerTimeToSpawn + " -> " + biggestTimeToSpawn);
+                //Debug.Log("decrease time to spawn " + smallerTimeToSpawn + " -> " + biggestTimeToSpawn);
             }
         }
 }
@@ -209,7 +209,7 @@ public class LevelGenerator : MonoBehaviour
         }
         // after creating reset timer to spawn
         timerLeftToSpwan = Random.Range(smallerTimeToSpawn, biggestTimeToSpawn);
-        Debug.Log("generating " + timerLeftToSpwan);
+        //Debug.Log("generating " + timerLeftToSpwan);
     }
 
 

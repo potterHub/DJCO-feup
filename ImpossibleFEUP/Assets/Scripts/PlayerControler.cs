@@ -4,6 +4,8 @@ using UnityEngine;
 using UnityEngine.UI;
 
 public class PlayerControler : MonoBehaviour {
+    private Animator anim;
+
 	private bool gameStarted;
 
     public LayerMask firstFloor;
@@ -12,7 +14,7 @@ public class PlayerControler : MonoBehaviour {
 
     public HealthBarScript healthBar;
     public static float maxHealth = 100f;
-    public float Health;
+    private float Health;
 
     public Text metersText;
     private float meters;
@@ -26,10 +28,10 @@ public class PlayerControler : MonoBehaviour {
 	public GameObject scoresPanel;
 	private Scores scores;
 
-    private const float topTimeToIncreaseSpeed = 30f;
-    private const float downTimeToIncreaseSpeed = 20f;
+    private const float topTimeToIncreaseSpeed = 20f;
+    private const float downTimeToIncreaseSpeed = 15f;
     private float timerLeftToIncrease;
-    public float playerInitialSpeed = 8f;
+    public float playerInitialSpeed = 6f;
     public float playerMaxSpeed = 20f;
     private float playerCurrentSpeed;
 
@@ -56,6 +58,7 @@ public class PlayerControler : MonoBehaviour {
         numCoffes = 0;
 
         metersText.text = "Meters: 0m";
+        anim = GetComponent<Animator>();
         playerRgBody = GetComponent<Rigidbody2D>();
         playerColider = GetComponent<Collider2D>();
 
@@ -104,7 +107,10 @@ public class PlayerControler : MonoBehaviour {
         isDead = true;
         playerCurrentSpeed = 0f;
 
-        playerRgBody.velocity = new Vector2(0, playerRgBody.velocity.y);
+        setPlayerHorizontalSpeed(0);
+
+        anim.SetTrigger("dead");
+        //Debug.Log("die");
 
         SoundController.instance.stopMusic();
         SoundController.instance.playMusic(music.player_death, false);
@@ -138,6 +144,14 @@ public class PlayerControler : MonoBehaviour {
         return numCoffes > 0;
     }
 
+    private void setPlayerHorizontalSpeed(float speedHor) {
+        playerRgBody.velocity = new Vector2(speedHor, playerRgBody.velocity.y);
+
+        // **********************************
+        anim.SetFloat("speed", speedHor / 2.0f);
+        // **********************************
+    }
+
     // Update is called once per 
     void Update () {
 		if (!isDead) {
@@ -158,7 +172,10 @@ public class PlayerControler : MonoBehaviour {
 
             //isGrounded = _1st_grounded; //|| _2nd_touching;
 
-            playerRgBody.velocity = new Vector2(!haveColideWithOtherStudent ? playerCurrentSpeed : (playerCurrentSpeed / 2.0f), playerRgBody.velocity.y);
+            setPlayerHorizontalSpeed(!haveColideWithOtherStudent ? playerCurrentSpeed : (playerCurrentSpeed / 2.0f));
+            // **********************************
+
+
             if (Input.GetMouseButtonDown(0)) {
                 if (_1st_grounded) {
                     playerRgBody.velocity = new Vector2(playerRgBody.velocity.x, jumpSpeed);
@@ -180,13 +197,15 @@ public class PlayerControler : MonoBehaviour {
             timerLeftToIncrease -= Time.deltaTime;
             if (timerLeftToIncrease <= 0f && playerCurrentSpeed < playerMaxSpeed) {
                 timerLeftToIncrease = Random.Range(downTimeToIncreaseSpeed, topTimeToIncreaseSpeed);
-                float speed = playerCurrentSpeed + Random.Range(1.0f,1.5f);
-                playerCurrentSpeed += speed < playerMaxSpeed ? speed : playerMaxSpeed;
-                Debug.Log("acelarate " + playerCurrentSpeed);
+                float speed = playerCurrentSpeed + Random.Range(1.0f,2f);
+                playerCurrentSpeed = speed < playerMaxSpeed ? speed : playerMaxSpeed;
+                //Debug.Log("acelarate " + playerCurrentSpeed);
             }
 
-            if (playerCurrentSpeed >= playerMaxSpeed)
-                Debug.Log("max Speed reached");
+
+            // jump animation 
+            anim.SetFloat("jump", playerRgBody.velocity.y);
+
 
             if (Health <= 0)
                 killPlayer();
