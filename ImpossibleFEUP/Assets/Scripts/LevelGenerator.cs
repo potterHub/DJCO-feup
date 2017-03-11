@@ -7,6 +7,13 @@ public class LevelGenerator : MonoBehaviour
     // move to the game control and acess trought game control
     private const float numPlataformsInAdvance = 4.0f;
 
+	// background
+	public GameObject background;
+	private float backgroundHorizontalLength;
+	private Vector3 lastPositionBackground;
+
+	private Queue<GameObject> backgroundList;
+
     // first floor
     public GameObject firstFloorGround;
     private float firstFloorgroundHorizontalLenght;
@@ -53,6 +60,18 @@ public class LevelGenerator : MonoBehaviour
     {
         Random.InitState(unchecked((int)System.DateTime.Now.Ticks));
 
+		// background
+		backgroundList = new Queue<GameObject>();
+		backgroundHorizontalLength = background.GetComponent<SpriteRenderer>().sprite.bounds.max.x - background.GetComponent<SpriteRenderer>().sprite.bounds.min.x;
+
+		lastPositionBackground = background.transform.position;
+		lastPositionBackground.x -= backgroundHorizontalLength;
+		while (lastPositionBackground.x < GameController.instance.player.transform.position.x + backgroundHorizontalLength) {
+			addNewBackgroundToScene ();
+		}
+
+		GameObject.Find("feup").SetActive(false);
+
         // first floor
         firstFloorGroundList = new Queue<GameObject>();
         firstFloorgroundHorizontalLenght = firstFloorGround.GetComponent<BoxCollider2D>().size.x;
@@ -93,6 +112,13 @@ public class LevelGenerator : MonoBehaviour
         otherObject.SetActive(false);
     }
 
+	private void addNewBackgroundToScene() {
+		lastPositionBackground.x += backgroundHorizontalLength;
+		var newObj = Instantiate(background, lastPositionBackground, transform.rotation);
+		newObj.transform.parent = GameObject.Find("Scenery").transform;
+		backgroundList.Enqueue(newObj);
+	}
+
     private void addNewFirstFloorToScene()
     {
         lastPositionFirstFloor.x += firstFloorgroundHorizontalLenght;
@@ -108,6 +134,13 @@ public class LevelGenerator : MonoBehaviour
         newObj.transform.parent = GameObject.Find("Scenery").transform;
         secondFloorGroundList.Enqueue(newObj);
     }
+
+	private void rotateBackgroundQueuePlataform() {
+		var obj = backgroundList.Dequeue();
+		lastPositionBackground.x += backgroundHorizontalLength;
+		obj.transform.position = lastPositionBackground;
+		backgroundList.Enqueue(obj);
+	}
 
     private void rotateFirstQueuePlataform()
     {
@@ -145,13 +178,17 @@ public class LevelGenerator : MonoBehaviour
     // Update is called once per frame
     void Update()
     {        
-            if (lastPositionFirstFloor.x < GameController.instance.player.transform.position.x + firstFloorgroundHorizontalLenght * numPlataformsInAdvance)
-                rotateFirstQueuePlataform();
 
-            if (lastPositionSecondFloor.x < GameController.instance.player.transform.position.x + secondFloorgroundHorizontalLenght * numPlataformsInAdvance)
-                rotateSecondQueuePlataform();
+		if (lastPositionBackground.x < GameController.instance.player.transform.position.x + backgroundHorizontalLength/2 - 10)
+			rotateBackgroundQueuePlataform();
+		
+        if (lastPositionFirstFloor.x < GameController.instance.player.transform.position.x + firstFloorgroundHorizontalLenght * numPlataformsInAdvance)
+            rotateFirstQueuePlataform();
 
-            destroyObjects();
+        if (lastPositionSecondFloor.x < GameController.instance.player.transform.position.x + secondFloorgroundHorizontalLenght * numPlataformsInAdvance)
+            rotateSecondQueuePlataform();
+
+        destroyObjects();
 
         if (!GameController.instance.player.isPlayerDead()) {
             timerLeftToSpwan -= Time.deltaTime;
