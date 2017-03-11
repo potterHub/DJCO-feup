@@ -235,9 +235,10 @@ public class LevelGenerator : MonoBehaviour
         else if (type < 16)
             newObj = generateNewObject(ref otherStudentObject, endOfScreen);
         else if (type < 18)
-            newObj = generateNewObject(ref otherObject, endOfScreen);
-        else
             newObj = generateNewObject(ref coffeObject, endOfScreen);
+        else
+            newObj = generateNewObject(ref otherObject, endOfScreen);
+
 
         // setting object active and adding it to the scene
         if (newObj != null) {

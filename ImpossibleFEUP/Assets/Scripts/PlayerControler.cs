@@ -9,8 +9,7 @@ public class PlayerControler : MonoBehaviour {
 	private bool gameStarted;
 
     public LayerMask firstFloor;
-    public LayerMask secondFloor;
-    public LayerMask otherObject;
+    private bool isGrounded;
 
     public HealthBarScript healthBar;
     public static float maxHealth = 100f;
@@ -54,6 +53,7 @@ public class PlayerControler : MonoBehaviour {
 		gameStarted = false;
 		meters = 0;
         isDead = false;
+        isGrounded = false;
         doubleJump = false;
         numCoffes = 0;
 
@@ -90,14 +90,24 @@ public class PlayerControler : MonoBehaviour {
         if (isDead || numCoffes <= 0)
             return false;
         numCoffes--;
+        SoundController.instance.playEffect(effect.coffe);
         return true;
     }
 
-    public void stepInBeer() {
+    public void stepInBeer(float heathToLose) {
         if (!isDead) {
-            Health -= 25;
+            Health -= heathToLose;
             if (Health <= 0)
                 killPlayer();
+            healthBar.updateBar(Health / PlayerControler.maxHealth);
+        }
+    }
+
+    public void stepInVendingMachine(float lifeGain) {
+        if (!isDead) {
+            Health += lifeGain;
+            if (Health > PlayerControler.maxHealth)
+                Health = PlayerControler.maxHealth;
             healthBar.updateBar(Health / PlayerControler.maxHealth);
         }
     }
@@ -162,22 +172,13 @@ public class PlayerControler : MonoBehaviour {
 			}
 
             // secondFloor colider is importante to make the double jump to the secound floor only
-            bool _1st_grounded = Physics2D.IsTouchingLayers(playerColider, firstFloor) || Physics2D.IsTouchingLayers(playerColider, otherObject);
-            //bool _2nd_touching = Physics2D.IsTouchingLayers(playerColider, secondFloor);
-
-            if (_1st_grounded)
+            isGrounded = Physics2D.IsTouchingLayers(playerColider, firstFloor); //|| Physics2D.IsTouchingLayers(playerColider, otherObject);
+            if (isGrounded)
                 doubleJump = false;
-            //if (_2nd_touching)
-            //    doubleJump = false;
-
-            //isGrounded = _1st_grounded; //|| _2nd_touching;
-
             setPlayerHorizontalSpeed(!haveColideWithOtherStudent ? playerCurrentSpeed : (playerCurrentSpeed / 2.0f));
-            // **********************************
-
 
             if (Input.GetMouseButtonDown(0)) {
-                if (_1st_grounded) {
+                if (isGrounded) {
                     playerRgBody.velocity = new Vector2(playerRgBody.velocity.x, jumpSpeed);
                     SoundController.instance.playEffect(effect.jump);
                 } else if (!doubleJump) {

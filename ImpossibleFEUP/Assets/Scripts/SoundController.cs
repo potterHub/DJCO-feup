@@ -9,7 +9,11 @@ public enum music {
 }
 
 public enum effect {
-    jump
+    jump,
+    coffe,
+    beer,
+    vendingMachine,
+    students
 }
 
 public class SoundController : MonoBehaviour {
@@ -21,9 +25,6 @@ public class SoundController : MonoBehaviour {
 
     public static SoundController instance;
 
-    public static float lowPitch = 0.9f;
-    public static float highPitch = 1.1f;
-
     // Use this for initialization
     void Awake() {
         if (instance == null)
@@ -34,7 +35,7 @@ public class SoundController : MonoBehaviour {
 
     public void playMusic(music m, bool loop) {
         musicSource.clip = musicClips[(int)m];
-        effectSource.volume = 0.8f;
+        effectSource.volume = 0.5f;
         musicSource.loop = loop;
         musicSource.Play();
     }
@@ -45,9 +46,13 @@ public class SoundController : MonoBehaviour {
 
     public void playEffect(effect eff) {
         effectSource.clip = effectClips[(int)eff];
-        effectSource.volume = Random.Range(0.5f, 0.75f);
-        effectSource.pitch = Random.Range(lowPitch, highPitch);
+        if (eff == effect.jump) { 
+            effectSource.volume = Random.Range(0.5f, 0.75f);
+            effectSource.pitch = Random.Range(0.9f, 1.1f);
+        }else{
+            effectSource.volume = Random.Range(0.9f, 1f);
+            effectSource.pitch = Random.Range(0.95f, 1.05f);
+        }
         effectSource.Play();
     }
-
 }
