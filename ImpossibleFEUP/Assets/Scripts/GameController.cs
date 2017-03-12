@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 public class GameController : MonoBehaviour {
     public static GameController instance;
@@ -9,6 +10,11 @@ public class GameController : MonoBehaviour {
     public Camera gameCamera;
     public LevelGenerator scenery;
     public PlayerControler player;
+
+	private bool scoresShown;
+	private Scores scores;
+	public Text scoresText;
+	public GameObject scoresPanel;
 
     // Use this for initialization
     void Awake () {
@@ -20,8 +26,51 @@ public class GameController : MonoBehaviour {
         SoundController.instance.playMusic(music.bossfight_commando_steve, true);
     }
 
+	void Start () {
+		scoresShown = false;
+	}
+
     // Update is called once per frame
     void Update () {
-		
+
+		if(player.getIsDead()) {
+			if (!scoresShown)
+				showScores ();
+		}
+
+	}
+
+	private void showScores() {
+
+		if (!System.IO.File.Exists(Application.persistentDataPath + "/scores")) {
+			scores = new Scores ();
+		} else {
+			scores = FileManager.ReadFromBinaryFile<Scores> (Application.persistentDataPath + "/scores");
+		}
+
+		if (scores.getScores ().Count < 5) {
+			scores.addScore ("Eduardo", player.getMeters());
+			scores.getScores ().Sort (scores.SortByScore);
+		} else if (player.getMeters() > scores.getScores () [4].Value) {
+			Debug.Log ("é maior");
+			scores.addScore ("Eduardo", player.getMeters());
+			scores.getScores ().Sort (scores.SortByScore);
+			scores.getScores ().RemoveAt (5);
+		}
+
+		for (int i = 0; i < scores.getScores().Count; i++) {
+			scoresText.text += scores.getScores() [i].Key + "         " + scores.getScores()[i].Value.ToString("0.00") + "m" + "\r\n";
+		}
+
+		scoresPanel.SetActive (true);
+
+		scoresShown = true;
+
+		FileManager.WriteToBinaryFile (Application.persistentDataPath + "/scores", scores);
+	}
+
+	public void restartGame() {
+		SceneManager.LoadScene ("ImpossibleFeupPrototype");
+		Time.timeScale = 0;
 	}
 }

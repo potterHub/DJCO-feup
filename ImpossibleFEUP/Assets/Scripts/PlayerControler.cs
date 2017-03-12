@@ -5,9 +5,6 @@ using UnityEngine.UI;
 
 public class PlayerControler : MonoBehaviour {
     private Animator anim;
-
-	private bool gameStarted;
-
     public LayerMask firstFloor;
     private bool isGrounded;
 
@@ -16,16 +13,10 @@ public class PlayerControler : MonoBehaviour {
     private float Health;
 
     public Text metersText;
-    private float meters;
-
-    public Text scoresText;
-    private bool scoresShown;
+	private float meters;
 
     private bool isDead = false;
     private int numCoffes = 0;
-
-	public GameObject scoresPanel;
-	private Scores scores;
 
     private const float topTimeToIncreaseSpeed = 20f;
     private const float downTimeToIncreaseSpeed = 15f;
@@ -50,7 +41,6 @@ public class PlayerControler : MonoBehaviour {
     // Use this for initialization
     void Start() {
 		timePlayed = 0;
-		gameStarted = false;
 		meters = 0;
         isDead = false;
         isGrounded = false;
@@ -71,7 +61,7 @@ public class PlayerControler : MonoBehaviour {
         playerCurrentSpeed = playerInitialSpeed;
 
         haveColideWithOtherStudent = false;
-		scoresShown = false;
+
     }
     public bool isPlayerDead() {
         return isDead;
@@ -210,38 +200,14 @@ public class PlayerControler : MonoBehaviour {
 
             if (Health <= 0)
                 killPlayer();
-        } else {
-			if (!scoresShown)
-				showScores ();
-		}
+        } 
 	}
 
-	private void showScores() {
-		
-		if (!System.IO.File.Exists(Application.persistentDataPath + "/scores")) {
-			scores = new Scores ();
-		} else {
-			scores = FileManager.ReadFromBinaryFile<Scores> (Application.persistentDataPath + "/scores");
-		}
+	public bool getIsDead() {
+		return isDead;
+	}
 
-		if (scores.getScores ().Count < 5) {
-			scores.addScore ("Eduardo", meters);
-			scores.getScores ().Sort (scores.SortByScore);
-		} else if (meters > scores.getScores () [4].Value) {
-			Debug.Log ("é maior");
-			scores.addScore ("Eduardo", meters);
-			scores.getScores ().Sort (scores.SortByScore);
-			scores.getScores ().RemoveAt (5);
-		}
-
-		for (int i = 0; i < scores.getScores().Count; i++) {
-			scoresText.text += scores.getScores() [i].Key + "         " + scores.getScores()[i].Value.ToString("0.00") + "m" + "\r\n";
-		}
-
-		scoresPanel.SetActive (true);
-
-		scoresShown = true;
-
-		FileManager.WriteToBinaryFile (Application.persistentDataPath + "/scores", scores);
+	public float getMeters() {
+		return meters;
 	}
 }
