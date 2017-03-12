@@ -49,7 +49,7 @@ public class PlayerControler : MonoBehaviour {
         doubleJump = false;
         numCoffes = 0;
 
-        metersText.text = "Meters: 0m";
+        metersText.text = "0 m";
         anim = GetComponent<Animator>();
         playerRgBody = GetComponent<Rigidbody2D>();
         playerColider = GetComponent<Collider2D>();
@@ -184,7 +184,7 @@ public class PlayerControler : MonoBehaviour {
 				timePlayed += Time.deltaTime;
 
 				meters += (playerCurrentSpeed * Time.deltaTime) / 2f;
-				metersText.text = "Meters: " + meters.ToString ("0.00") + "m";
+				metersText.text = meters.ToString ("0.00 ") + "m";
 
 				// speed up level
 				timerLeftToIncrease -= Time.deltaTime;
