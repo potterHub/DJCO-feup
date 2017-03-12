@@ -27,8 +27,6 @@ public class GameController : MonoBehaviour {
         else if (instance != this)
             Destroy(gameObject);
 
-		//DontDestroyOnLoad (soundManager);
-
         SoundController.instance.playMusic(music.bossfight_commando_steve, true);
     }
 

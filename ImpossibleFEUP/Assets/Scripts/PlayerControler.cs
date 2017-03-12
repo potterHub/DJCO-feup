@@ -32,6 +32,8 @@ public class PlayerControler : MonoBehaviour {
     private bool doubleJump;
     private bool onSecondFloor;
 
+	public GameObject boost;
+	public GameObject cantJump;
 
     private float timerLeftSlowDown;
 
@@ -167,7 +169,7 @@ public class PlayerControler : MonoBehaviour {
 				doubleJump = false;
 			setPlayerHorizontalSpeed (!haveColideWithOtherStudent ? playerCurrentSpeed : (playerCurrentSpeed / 2.0f));
 			if (StaticLevelState.getState() == 1) {
-				if (Input.GetMouseButtonDown (0)) {
+				if (Input.GetMouseButtonDown (0) && !haveColideWithOtherStudent) {
 					if (isGrounded) {
 						playerRgBody.velocity = new Vector2 (playerRgBody.velocity.x, jumpSpeed);
 						SoundController.instance.playEffect (effect.jump);
@@ -202,6 +204,16 @@ public class PlayerControler : MonoBehaviour {
 					killPlayer ();
 			} 
 		}
+
+		if (haveColideWithOtherStudent)
+			cantJump.SetActive (true);
+		else
+			cantJump.SetActive (false);
+
+		if (isOnSecondFloor())
+			boost.SetActive (true);
+		else
+			boost.SetActive(false);
 	}
 
 	public bool getIsDead() {
