@@ -161,46 +161,47 @@ public class PlayerControler : MonoBehaviour {
 					haveColideWithOtherStudent = false;
 			}
 
-            // secondFloor colider is importante to make the double jump to the secound floor only
-            isGrounded = Physics2D.IsTouchingLayers(playerColider, firstFloor); //|| Physics2D.IsTouchingLayers(playerColider, otherObject);
-            if (isGrounded)
-                doubleJump = false;
-            setPlayerHorizontalSpeed(!haveColideWithOtherStudent ? playerCurrentSpeed : (playerCurrentSpeed / 2.0f));
+			// secondFloor colider is importante to make the double jump to the secound floor only
+			isGrounded = Physics2D.IsTouchingLayers (playerColider, firstFloor); //|| Physics2D.IsTouchingLayers(playerColider, otherObject);
+			if (isGrounded)
+				doubleJump = false;
+			setPlayerHorizontalSpeed (!haveColideWithOtherStudent ? playerCurrentSpeed : (playerCurrentSpeed / 2.0f));
+			if (StaticLevelState.getState() == 1) {
+				if (Input.GetMouseButtonDown (0)) {
+					if (isGrounded) {
+						playerRgBody.velocity = new Vector2 (playerRgBody.velocity.x, jumpSpeed);
+						SoundController.instance.playEffect (effect.jump);
+					} else if (!doubleJump) {
+						playerRgBody.velocity = new Vector2 (playerRgBody.velocity.x, jumpSpeed);
+						SoundController.instance.playEffect (effect.jump);
+						doubleJump = true;
+					}
+				}         
 
-            if (Input.GetMouseButtonDown(0)) {
-                if (isGrounded) {
-                    playerRgBody.velocity = new Vector2(playerRgBody.velocity.x, jumpSpeed);
-                    SoundController.instance.playEffect(effect.jump);
-                } else if (!doubleJump) {
-                    playerRgBody.velocity = new Vector2(playerRgBody.velocity.x, jumpSpeed);
-                    SoundController.instance.playEffect(effect.jump);
-                    doubleJump = true;
-                }
-            }         
+				// gui update
+				timePlayed += Time.deltaTime;
 
-			// gui update
-			timePlayed += Time.deltaTime;
+				meters += (playerCurrentSpeed * Time.deltaTime) / 2f;
+				metersText.text = "Meters: " + meters.ToString ("0.00") + "m";
 
-            meters += (playerCurrentSpeed * Time.deltaTime) / 2f;
-			metersText.text = "Meters: " + meters.ToString ("0.00") + "m";
-
-            // speed up level
-            timerLeftToIncrease -= Time.deltaTime;
-            if (timerLeftToIncrease <= 0f && playerCurrentSpeed < playerMaxSpeed) {
-                timerLeftToIncrease = Random.Range(downTimeToIncreaseSpeed, topTimeToIncreaseSpeed);
-                float speed = playerCurrentSpeed + Random.Range(1.0f,2f);
-                playerCurrentSpeed = speed < playerMaxSpeed ? speed : playerMaxSpeed;
-                //Debug.Log("acelarate " + playerCurrentSpeed);
-            }
-
-
-            // jump animation 
-            anim.SetFloat("jump", playerRgBody.velocity.y);
+				// speed up level
+				timerLeftToIncrease -= Time.deltaTime;
+				if (timerLeftToIncrease <= 0f && playerCurrentSpeed < playerMaxSpeed) {
+					timerLeftToIncrease = Random.Range (downTimeToIncreaseSpeed, topTimeToIncreaseSpeed);
+					float speed = playerCurrentSpeed + Random.Range (1.0f, 2f);
+					playerCurrentSpeed = speed < playerMaxSpeed ? speed : playerMaxSpeed;
+					//Debug.Log("acelarate " + playerCurrentSpeed);
+				}
 
 
-            if (Health <= 0)
-                killPlayer();
-        } 
+				// jump animation 
+				anim.SetFloat ("jump", playerRgBody.velocity.y);
+
+
+				if (Health <= 0)
+					killPlayer ();
+			} 
+		}
 	}
 
 	public bool getIsDead() {

@@ -190,21 +190,22 @@ public class LevelGenerator : MonoBehaviour
 
         destroyObjects();
 
-        if (!GameController.instance.player.isPlayerDead()) {
-            timerLeftToSpwan -= Time.deltaTime;
-            timerTimeToInc -= Time.deltaTime;
-            if (timerLeftToSpwan <= 0f)
-                creatObjects();
-            if (timerTimeToInc <= 0f && smallerTimeToSpawn > minTimeToSpawn)
-            {
-                timerTimeToInc = Random.Range(downTimeToIncreaseSpawn, topTimeToIncreaseSpawn);
-                float smallerTime = smallerTimeToSpawn - Random.Range(0.2f, 0.6f);
-                smallerTimeToSpawn = smallerTime > minTimeToSpawn ? smallerTime : minTimeToSpawn;
-                biggestTimeToSpawn = smallerTimeToSpawn + 0.5f;
+		if (StaticLevelState.getState() == 1) {
+			if (!GameController.instance.player.isPlayerDead ()) {
+				timerLeftToSpwan -= Time.deltaTime;
+				timerTimeToInc -= Time.deltaTime;
+				if (timerLeftToSpwan <= 0f)
+					creatObjects ();
+				if (timerTimeToInc <= 0f && smallerTimeToSpawn > minTimeToSpawn) {
+					timerTimeToInc = Random.Range (downTimeToIncreaseSpawn, topTimeToIncreaseSpawn);
+					float smallerTime = smallerTimeToSpawn - Random.Range (0.2f, 0.6f);
+					smallerTimeToSpawn = smallerTime > minTimeToSpawn ? smallerTime : minTimeToSpawn;
+					biggestTimeToSpawn = smallerTimeToSpawn + 0.5f;
 
-                //Debug.Log("decrease time to spawn " + smallerTimeToSpawn + " -> " + biggestTimeToSpawn);
-            }
-        }
+					//Debug.Log("decrease time to spawn " + smallerTimeToSpawn + " -> " + biggestTimeToSpawn);
+				}
+			}
+		}
 }
 
     private void destroyObjects()

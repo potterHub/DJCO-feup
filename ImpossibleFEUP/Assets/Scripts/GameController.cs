@@ -7,6 +7,7 @@ using UnityEngine.SceneManagement;
 public class GameController : MonoBehaviour {
     public static GameController instance;
 
+	public GameObject soundManager;
     public Camera gameCamera;
     public LevelGenerator scenery;
     public PlayerControler player;
@@ -16,6 +17,9 @@ public class GameController : MonoBehaviour {
 	public Text scoresText;
 	public GameObject scoresPanel;
 
+	public List<GameObject> UI;
+	public GameObject menu;
+
     // Use this for initialization
     void Awake () {
         if (instance == null)
@@ -23,11 +27,16 @@ public class GameController : MonoBehaviour {
         else if (instance != this)
             Destroy(gameObject);
 
+		//DontDestroyOnLoad (soundManager);
+
         SoundController.instance.playMusic(music.bossfight_commando_steve, true);
     }
 
 	void Start () {
 		scoresShown = false;
+		for (int i = 0; i < UI.Count; i++) {
+			UI [i].SetActive (false);
+		}
 	}
 
     // Update is called once per frame
@@ -38,9 +47,22 @@ public class GameController : MonoBehaviour {
 				showScores ();
 		}
 
+		if (StaticLevelState.getState () == 0) {
+			menu.SetActive (true);
+			for (int i = 0; i < UI.Count; i++) {
+				UI [i].SetActive (false);
+			}
+
+		} else {
+			menu.SetActive (false);
+			for (int i = 0; i < UI.Count; i++) {
+				UI [i].SetActive (true);
+			}
+		}
+			
 	}
 
-	private void showScores() {
+	public void showScores() {
 
 		if (!System.IO.File.Exists(Application.persistentDataPath + "/scores")) {
 			scores = new Scores ();
@@ -70,7 +92,16 @@ public class GameController : MonoBehaviour {
 	}
 
 	public void restartGame() {
+		StaticLevelState.changeState (1);
 		SceneManager.LoadScene ("ImpossibleFeupPrototype");
-		Time.timeScale = 0;
+	}
+
+	public void startGame() {
+		StaticLevelState.changeState (1);
+		SoundController.instance.playMusic(music.bossfight_commando_steve, true);
+	}
+
+	public void exitGame() {
+		Application.Quit ();
 	}
 }
