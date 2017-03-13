@@ -118,6 +118,8 @@ public class PlayerControler : MonoBehaviour {
         SoundController.instance.playMusic(music.player_death, false);
         // play dead animation
 
+		StaticLevelState.changeState (2);
+
     }
 
     public void stepInOtherStudent(float slowDownTime) {

@@ -8,24 +8,19 @@ public class SecondFloorChangeScript : MonoBehaviour {
     private float timerLeftToDrop = 0.0f;
     private bool timerToDrop;
 
-    public Text textTimer2ndFloor;
-
     // Use this for initialization
     void Start () {
         timerToDrop = false;
-        textTimer2ndFloor.text = "";
     }
 	
 	// Update is called once per frame
 	void Update () {
         if (timerToDrop) {
             timerLeftToDrop -= Time.deltaTime;
-            textTimer2ndFloor.text = "Time To Drop: " + ((int)timerLeftToDrop) + "s";
             if (timerLeftToDrop < 0 || (Input.GetMouseButtonDown(0) && timerLeftToDrop <= dropTimer - 1.0f)) {
                 var levelGen = GameController.instance.scenery.GetComponent<LevelGenerator>();
                 levelGen.levelGenTriggerSecond();
                 timerToDrop = false;
-                textTimer2ndFloor.text = "";
             }
         }
     }

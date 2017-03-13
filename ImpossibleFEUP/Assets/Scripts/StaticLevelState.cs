@@ -4,7 +4,7 @@ using UnityEngine;
 
 public static class StaticLevelState {
 
-	private static int state = 0; //0 - Menu; 1 - Playing
+	private static int state = 0; //0 - Menu; 1 - Playing; //2 - Death
 
 	public static void changeState(int stateTemp) {
 		state = stateTemp;
