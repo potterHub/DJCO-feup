@@ -124,6 +124,7 @@ public class PlayerControler : MonoBehaviour {
         if (!isDead) {
             timerLeftSlowDown = slowDownTime;
             haveColideWithOtherStudent = true;
+			cantJump.GetComponent<Animator> ().Play("CantJump", -1, 0f);
         }
     }
 
@@ -205,8 +206,9 @@ public class PlayerControler : MonoBehaviour {
 			} 
 		}
 
-		if (haveColideWithOtherStudent)
+		if (haveColideWithOtherStudent) {
 			cantJump.SetActive (true);
+		}
 		else
 			cantJump.SetActive (false);
 

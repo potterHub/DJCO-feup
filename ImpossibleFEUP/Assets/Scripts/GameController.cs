@@ -102,4 +102,9 @@ public class GameController : MonoBehaviour {
 	public void exitGame() {
 		Application.Quit ();
 	}
+
+	public void showMenu() {
+		StaticLevelState.changeState (0);
+		SceneManager.LoadScene ("ImpossibleFeupPrototype");
+	}
 }
