@@ -133,6 +133,7 @@ public class PlayerControler : MonoBehaviour {
     public void jumpingToSecondFloor() {
         if (!isDead) {
             this.onSecondFloor = doubleJump = true;
+            anim.SetTrigger("running");
         }
     }
 
