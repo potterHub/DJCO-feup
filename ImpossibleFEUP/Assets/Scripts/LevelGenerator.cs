@@ -231,14 +231,14 @@ public class LevelGenerator : MonoBehaviour
         // inc camera size so the objects appear after the camera
         GameObject newObj;
         int type = Random.Range(0, 20);
-        //if (type < 10)
-         //   newObj = generateNewObject(ref beerObject, endOfScreen);
-        //else if (type < 16)
-         //   newObj = generateNewObject(ref otherStudentObject, endOfScreen);
-        //else if (type < 18)
+        if (type < 10)
+            newObj = generateNewObject(ref beerObject, endOfScreen);
+        else if (type < 16)
+            newObj = generateNewObject(ref otherStudentObject, endOfScreen);
+        else if (type < 18)
             newObj = generateNewObject(ref coffeObject, endOfScreen);
-        //else
-            //newObj = generateNewObject(ref otherObject, endOfScreen);
+        else
+            newObj = generateNewObject(ref otherObject, endOfScreen);
 
 
         // setting object active and adding it to the scene
