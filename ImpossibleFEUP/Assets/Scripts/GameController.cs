@@ -12,7 +12,6 @@ public class GameController : MonoBehaviour {
     public LevelGenerator scenery;
     public PlayerControler player;
 
-	private bool scoresShown;
 	private Scores scores;
 	public Text scoresText;
 	public Text namesText;
@@ -34,7 +33,6 @@ public class GameController : MonoBehaviour {
     }
 
 	void Start () {
-		scoresShown = false;
 		for (int i = 0; i < UI.Count; i++) {
 			UI [i].SetActive (false);
 		}
@@ -46,6 +44,7 @@ public class GameController : MonoBehaviour {
 		if (StaticLevelState.getState () == 0) {
 			menu.SetActive (true);
 			gameOverMenu.SetActive (false);
+			scoresPanel.SetActive (false);
 			for (int i = 0; i < UI.Count; i++) {
 				UI [i].SetActive (false);
 			}
@@ -53,12 +52,14 @@ public class GameController : MonoBehaviour {
 		} else if (StaticLevelState.getState () == 1) {
 			menu.SetActive (false);
 			gameOverMenu.SetActive (false);
+			scoresPanel.SetActive (false);
 			for (int i = 0; i < UI.Count; i++) {
 				UI [i].SetActive (true);
 			}
 		} else if (StaticLevelState.getState () == 2) {
 			menu.SetActive (false);
 			gameOverMenu.SetActive (true);
+			scoresPanel.SetActive (false);
 			for (int i = 0; i < UI.Count; i++) {
 				UI [i].SetActive (true);
 			}
@@ -121,6 +122,8 @@ public class GameController : MonoBehaviour {
 		name.interactable = false;
 
 		FileManager.WriteToBinaryFile (Application.persistentDataPath + "/scores", scores);
+
+		showScores ();
 	}
 
 	public void restartGame() {
@@ -140,5 +143,9 @@ public class GameController : MonoBehaviour {
 	public void showMenu() {
 		StaticLevelState.changeState (0);
 		SceneManager.LoadScene ("ImpossibleFeupPrototype");
+	}
+
+	public void showMenuWithoutRestart() {
+		StaticLevelState.changeState (0);
 	}
 }
