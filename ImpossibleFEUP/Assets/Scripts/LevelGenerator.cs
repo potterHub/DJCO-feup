@@ -7,12 +7,12 @@ public class LevelGenerator : MonoBehaviour
     // move to the game control and acess trought game control
     private const float numPlataformsInAdvance = 4.0f;
 
-	// background
-	public GameObject background;
-	private float backgroundHorizontalLength;
-	private Vector3 lastPositionBackground;
+    // background
+    public GameObject background;
+    private float backgroundHorizontalLength;
+    private Vector3 lastPositionBackground;
 
-	private Queue<GameObject> backgroundList;
+    private Queue<GameObject> backgroundList;
 
     // first floor
     public GameObject firstFloorGround;
@@ -60,17 +60,17 @@ public class LevelGenerator : MonoBehaviour
     {
         Random.InitState(unchecked((int)System.DateTime.Now.Ticks));
 
-		// background
-		backgroundList = new Queue<GameObject>();
-		backgroundHorizontalLength = background.GetComponent<SpriteRenderer>().sprite.bounds.max.x - background.GetComponent<SpriteRenderer>().sprite.bounds.min.x;
+        // background
+        backgroundList = new Queue<GameObject>();
+        backgroundHorizontalLength = background.GetComponent<SpriteRenderer>().sprite.bounds.max.x - background.GetComponent<SpriteRenderer>().sprite.bounds.min.x;
 
-		lastPositionBackground = background.transform.position;
-		lastPositionBackground.x -= backgroundHorizontalLength;
-		while (lastPositionBackground.x < GameController.instance.player.transform.position.x + backgroundHorizontalLength) {
-			addNewBackgroundToScene ();
-		}
+        lastPositionBackground = background.transform.position;
+        lastPositionBackground.x -= backgroundHorizontalLength;
+        while (lastPositionBackground.x < GameController.instance.player.transform.position.x + backgroundHorizontalLength) {
+            addNewBackgroundToScene();
+        }
 
-		GameObject.Find("feup").SetActive(false);
+        GameObject.Find("feup").SetActive(false);
 
         // first floor
         firstFloorGroundList = new Queue<GameObject>();
@@ -98,7 +98,7 @@ public class LevelGenerator : MonoBehaviour
         objectsInGame = new List<GameObject>();
         timerTimeToInc = Random.Range(downTimeToIncreaseSpawn, topTimeToIncreaseSpawn);
         timerLeftToSpwan = Random.Range(smallerTimeToSpawn, biggestTimeToSpawn);
-        
+
         // beer object
         beerObject.SetActive(false);
 
@@ -110,7 +110,7 @@ public class LevelGenerator : MonoBehaviour
 
         // other Random Object
         otherObject.SetActive(false);
-    }
+    }    
 
 	private void addNewBackgroundToScene() {
 		lastPositionBackground.x += backgroundHorizontalLength;

@@ -28,15 +28,17 @@ public class SecondFloorChangeScript : MonoBehaviour {
     private void OnTriggerExit2D(Collider2D collision) {
         if (!timerToDrop && collision.gameObject.tag == "Player") {
             var playerControler = GameController.instance.player.GetComponent<PlayerControler>();
+            var levelGenerator = GameController.instance.scenery.GetComponent<LevelGenerator>();
             if (playerControler.isOnSecondFloor()) {// if the player is on the secound floor already
-                Debug.Log("To first Floor");
-                playerControler.fallingFromSecondFloor();
+                //Debug.Log("To first Floor");
+                playerControler.fallingFromSecondFloor();               
+
             } else {
                 var player = collision.gameObject.GetComponent<PlayerControler>();
                 
                 // Debug.Log(player.gameObject.transform.position.y + " - " + transform.position.y);
                 if (player.transform.position.y > transform.position.y && player.getNumCoffes() > 0 && player.hasCoffe()) {
-                    Debug.Log("To second Floor");
+                    //Debug.Log("To second Floor");
                     player.useCoffe();
                     GameController.instance.scenery.GetComponent<LevelGenerator>().levelGenSolidSecond();// change to solid
                     playerControler.jumpingToSecondFloor();

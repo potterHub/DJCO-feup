@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;
 
 public class PlayerControler : MonoBehaviour {
+    private SpriteRenderer playerSprite;
     private Animator anim;
     public LayerMask firstFloor;
     private bool isGrounded;
@@ -53,6 +54,7 @@ public class PlayerControler : MonoBehaviour {
         anim = GetComponent<Animator>();
         playerRgBody = GetComponent<Rigidbody2D>();
         playerColider = GetComponent<Collider2D>();
+        playerSprite = GetComponent<SpriteRenderer>();
 
         Health = PlayerControler.maxHealth;
         healthBar.updateBar(Health / PlayerControler.maxHealth);
@@ -134,12 +136,15 @@ public class PlayerControler : MonoBehaviour {
         if (!isDead) {
             this.onSecondFloor = doubleJump = true;
             anim.SetTrigger("running");
+            playerSprite.sortingLayerName = "PlayerObjBack";
         }
     }
 
     public void fallingFromSecondFloor() {
-        if (!isDead)
+        if (!isDead) {
             this.onSecondFloor = doubleJump = false;
+            playerSprite.sortingLayerName = "PlayerObjFront";
+        }
     }
 
     public bool isOnSecondFloor() {
