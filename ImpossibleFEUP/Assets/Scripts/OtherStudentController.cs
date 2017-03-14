@@ -4,8 +4,8 @@ using UnityEngine;
 
 public class OtherStudentController : MonoBehaviour {
 
-    public float downSlowDownTime = 4.0f;
-    public float topSlowDownTime = 6.0f;
+    public float downSlowDownTime = 3.5f;
+    public float topSlowDownTime = 4.0f;
 
     // Use this for initialization
     void Start () {

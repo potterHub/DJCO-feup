@@ -103,7 +103,7 @@ public class GameController : MonoBehaviour {
 		if (name.text != "")
 			nameString = name.text;
 		else
-			nameString = "Manuel";
+			nameString = "Vasco";
 
 		if (!System.IO.File.Exists(Application.persistentDataPath + "/scores")) {
 			scores = new Scores ();
