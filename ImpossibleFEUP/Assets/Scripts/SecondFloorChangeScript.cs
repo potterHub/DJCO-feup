@@ -28,7 +28,6 @@ public class SecondFloorChangeScript : MonoBehaviour {
     private void OnTriggerExit2D(Collider2D collision) {
         if (!timerToDrop && collision.gameObject.tag == "Player") {
             var playerControler = GameController.instance.player.GetComponent<PlayerControler>();
-            var levelGenerator = GameController.instance.scenery.GetComponent<LevelGenerator>();
             if (playerControler.isOnSecondFloor()) {// if the player is on the secound floor already
                 //Debug.Log("To first Floor");
                 playerControler.fallingFromSecondFloor();               
