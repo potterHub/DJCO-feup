@@ -1,0 +1,6 @@
+﻿* Source code (one zip file - https://feupload.fe.up.pt/get/MVKQqAE0uVMB036 )
+* Executable/installer (one zip file -  https://feupload.fe.up.pt/get/tnyfEB6ua3LPwB4 )
+Nota: no ficheiro executable/installer existem 2 pastas, WINDOWS e ANDROID. A primeira contém o jogo num computador com o OS Windows; a segunda tem o ficheiro apk para dispositivos Android.
+
+
+youtube video : https://www.youtube.com/watch?v=t2rNXRttiRY
